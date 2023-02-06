@@ -4,10 +4,10 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
 (async () => {
     const runtimes = [
-        'nodejs12x', 
-        'nodejs14x', 
-        'nodejs16x', 
-        'nodejs18x', 
+        'nodejs12x',
+        'nodejs14x',
+        'nodejs16x',
+        'nodejs18x',
         'python37',
         'python38',
         'python39',
@@ -21,13 +21,13 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
         'rust_on_provided_al2'
     ];
 
-    const s3Client = new S3Client();
+    const s3Client = new S3Client({region: "us-east-2"});
 
     for(const runtime of runtimes) {
         childProcess.execSync(`./runtimes/${runtime}/build.sh`);
         const fileStream = fs.createReadStream(`./runtimes/${runtime}/code.zip`);
         const putObjectParams = {
-            Bucket: 'lambda-perf',
+            Bucket: 'mc-lambda-perf',
             Key: `${runtime}/code.zip`,
             Body: fileStream,
           };

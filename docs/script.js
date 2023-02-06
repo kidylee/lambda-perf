@@ -1,5 +1,5 @@
 const load = async () => {
-	const request = await fetch('https://raw.githubusercontent.com/maxday/lambda-perf/main/data/last.json')
+	const request = await fetch('https://raw.githubusercontent.com/kidylee/lambda-perf/main/data/last.json')
 	const json = await request.json();
 	return json
 }
@@ -18,7 +18,7 @@ const animate = async () => {
 	} catch (e) {
 		console.error(e);
 	}
-		
+
 }
 
 const replayAnimation = async () => {
@@ -36,7 +36,7 @@ const drawLang = async (idx, data) => {
 	newElement.id = `runtime_${idx}`;
 	document.getElementById("runtimes").appendChild(newElement);
 	const coldStartElement = newElement.getElementsByClassName('coldstarts')[0];
-	
+
 	const averageColdStartDuration = newElement.getElementsByClassName('averageColdStartDuration')[0];
     averageColdStartDuration.innerHTML = `${runtime.averageColdStartDuration}ms`
 

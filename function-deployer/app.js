@@ -2,6 +2,7 @@ const { LambdaClient, AddPermissionCommand, CreateFunctionCommand, DeleteFunctio
 const { CloudWatchLogsClient, CreateLogGroupCommand, DeleteLogGroupCommand, PutSubscriptionFilterCommand } = require("@aws-sdk/client-cloudwatch-logs");
 
 const PROJECT = 'lambda-perf';
+const BUCKET = `mc-${PROJECT}`
 
 const REGION = process.env.AWS_REGION;
 const ROLE_ARN = process.env.ROLE_ARN;
@@ -97,7 +98,7 @@ const createFunction = async (client, functionName, singleFunction) => {
         Handler: singleFunction.handler,
         Runtime: singleFunction.runtime,
         Code: {
-            S3Bucket: PROJECT,
+            S3Bucket: BUCKET,
             S3Key: `${sanitizedRuntime}/code.zip`
         },
         Role: ROLE_ARN

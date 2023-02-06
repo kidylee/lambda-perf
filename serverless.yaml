@@ -3,7 +3,7 @@ service: lambda-perf
 provider:
   name: aws
   memorySize: 512
-  region: us-east-1
+  region: us-east-2
   iam:
     role:
       name: lambda-perf-${sls:stage}-role
@@ -44,7 +44,7 @@ provider:
       Resource: "arn:aws:iam::${env:ACCOUNT_ID}:role/lambda-perf-${sls:stage}-role"
     - Effect: Allow
       Action: "s3:GetObject"
-      Resource: "arn:aws:s3:::lambda-perf/*"
+      Resource: "arn:aws:s3:::mc-lambda-perf/*"
     - Effect: Allow
       Action: "dynamodb:DeleteTable"
       Resource: "arn:aws:dynamodb:${self:provider.region}:${env:ACCOUNT_ID}:table/report-log"
@@ -67,6 +67,8 @@ package:
 
 functions:
   reportLogProcessor:
+    environment:
+      REGION: region
     package:
       individually: true
       patterns:
@@ -79,8 +81,9 @@ functions:
 
   functionDeployer:
     environment:
+      REGION: region
       ROLE_ARN: arn:aws:iam::${env:ACCOUNT_ID}:role/lambda-perf-${sls:stage}-role
-      LOG_PROCESSOR_ARN: 
+      LOG_PROCESSOR_ARN:
         "Fn::GetAtt": [ ReportLogProcessorLambdaFunction, Arn ]
     package:
       individually: true
@@ -95,6 +98,8 @@ functions:
       - schedule: cron(40 13 * * ? *)
 
   functionInvoker:
+    environment:
+      REGION: region
     package:
       individually: true
       patterns:
@@ -116,13 +121,15 @@ functions:
         - "!result-builder"
     handler: function-trigger-invoker/app.handler
     environment:
-      INVOKER: 
+      REGION: region
+      INVOKER:
         "Fn::GetAtt": [ FunctionInvokerLambdaFunction, Arn ]
     events:
       - schedule: cron(45 13 * * ? *)
 
   resultBuilder:
     environment:
+      REGION: region
       AUTH_TOKEN: ${env:AUTH_TOKEN}
     package:
       individually: true

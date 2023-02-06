@@ -1,8 +1,8 @@
 const { Octokit } = require("@octokit/rest");
-const { DynamoDBClient, ScanCommand } = require("@aws-sdk/client-dynamodb"); 
+const { DynamoDBClient, ScanCommand } = require("@aws-sdk/client-dynamodb");
 
 const TABLE = 'report-log';
-const OWNER = 'maxday';
+const OWNER = 'kidylee';
 const REPO = 'lambda-perf';
 const REGION = process.env.AWS_REGION;
 const AUTH_TOKEN = process.env.AUTH_TOKEN;
@@ -16,23 +16,23 @@ const commitFile = async (content, filename, authToken) => {
         let sha = '';
         try {
             const resultGet = await octokit.rest.repos.getContent(
-            { 
-                owner: OWNER, 
-                repo: REPO, 
-                path: `data/${filename}.json`, 
+            {
+                owner: OWNER,
+                repo: REPO,
+                path: `data/${filename}.json`,
             });
             sha = resultGet.data.sha;
         } catch (e) {
             console.log(`impossible to get the sha for ${filename}`);
-        } 
+        }
         await octokit.rest.repos.createOrUpdateFileContents(
-            { 
-                owner: OWNER, 
-                repo: REPO, 
-                path: `data/${filename}.json`, 
-                message: `perf data`, 
+            {
+                owner: OWNER,
+                repo: REPO,
+                path: `data/${filename}.json`,
+                message: `perf data`,
                 content: b64Content,
-                sha 
+                sha
             }
         );
     } catch (e) {
